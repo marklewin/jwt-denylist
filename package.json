@@ -1,0 +1,33 @@
+{
+  "name": "jwt-denylist",
+  "version": "1.0.0",
+  "description": "Example JWT denylist using Node and Redis, for Supertokens",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marklewin/jwt-denylist.git"
+  },
+  "keywords": [
+    "jwt",
+    "node",
+    "supertokens"
+  ],
+  "author": "Mark Lewin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marklewin/jwt-denylist/issues"
+  },
+  "homepage": "https://github.com/marklewin/jwt-denylist#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "nodemon": "^2.0.15",
+    "redis": "^4.0.0"
+  }
+}
