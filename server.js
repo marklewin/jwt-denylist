@@ -80,5 +80,5 @@ const generateAccessToken = (username) => {
 
 // listen for requests :)
 const listener = app.listen(3000, () => {
-  console.log("Your app is listening on port " + process.env.PORT);
+  console.log("Server running");
 });
