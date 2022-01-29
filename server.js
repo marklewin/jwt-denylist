@@ -14,8 +14,8 @@ let client = null;
 (async () => {
   client = redis.createClient();
 
-  client.on("error", (err) => {
-    console.log(err);
+  client.on("error", (error) => {
+    console.log(error);
   });
   client.on("connect", () => {
     console.log("Redis connected!");
@@ -30,14 +30,15 @@ const authenticateToken = async (request, response, next) => {
   const token = authHeader && authHeader.split(" ")[1];
 
   // token provided?
-  if (token == null)
+  if (token == null) {
     return response.status(403).send({
       message: "No token provided",
     });
+  }
 
   // token in blacklist?
-  let blacklist = await client.lRange("blacklist", 0, -1);
-  if (blacklist.indexOf(token) > -1) {
+  const blacklisted = await client.get(`bl_${token}`);
+  if (blacklisted) {
     return response.status(403).send({
       message: "Token in blacklist",
     });
@@ -55,9 +56,9 @@ const authenticateToken = async (request, response, next) => {
     request.userId = user.username;
     request.tokenExp = user.exp;
     request.token = token;
-
-    next();
   });
+
+  next();
 };
 
 app.post("/createUser", (request, response) => {
@@ -70,7 +71,12 @@ app.get("/", authenticateToken, (request, response) => {
 });
 
 app.post("/logout", authenticateToken, async (request, response) => {
-  await client.lPush("blacklist", request.token);
+  const { userId, token, tokenExp } = request;
+
+  const token_key = `bl_${token}`;
+  await client.set(token_key, token);
+  client.expireAt(token_key, tokenExp);
+
   return response.status(200).send("Token invalidated");
 });
 
