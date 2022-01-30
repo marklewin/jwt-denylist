@@ -36,11 +36,11 @@ const authenticateToken = async (request, response, next) => {
     });
   }
 
-  // token in blacklist?
-  const blacklisted = await client.get(`bl_${token}`);
-  if (blacklisted) {
+  // token in deny list?
+  const inDenyList = await client.get(`bl_${token}`);
+  if (inDenyList) {
     return response.status(403).send({
-      message: "Token in blacklist",
+      message: "Token in deny list",
     });
   }
 
