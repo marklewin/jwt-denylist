@@ -31,7 +31,7 @@ const authenticateToken = async (request, response, next) => {
 
   // token provided?
   if (token == null) {
-    return response.status(403).send({
+    return response.status(401).send({
       message: "No token provided",
     });
   }
@@ -39,7 +39,7 @@ const authenticateToken = async (request, response, next) => {
   // token in deny list?
   const inDenyList = await client.get(`bl_${token}`);
   if (inDenyList) {
-    return response.status(403).send({
+    return response.status(401).send({
       message: "Token in deny list",
     });
   }
@@ -56,9 +56,9 @@ const authenticateToken = async (request, response, next) => {
     request.userId = user.username;
     request.tokenExp = user.exp;
     request.token = token;
+    
+    next();
   });
-
-  next();
 };
 
 app.post("/createUser", (request, response) => {
